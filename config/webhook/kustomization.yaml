@@ -1,0 +1,6 @@
+resources:
+  - manifests.yaml # generated with controller-gen webhook
+  - service.yaml
+
+configurations:
+  - kustomizeconfig.yaml

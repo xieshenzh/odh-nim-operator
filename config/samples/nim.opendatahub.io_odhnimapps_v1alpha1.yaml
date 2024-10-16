@@ -1,0 +1,37 @@
+apiVersion: nim.opendatahub.io/v1alpha1
+kind: OdhNimApp
+metadata:
+  name: odh-nim-app
+  namespace: redhat-ods-applications
+spec:
+  # this is mandatory and will be set by the Operator when creating a template
+  templateRef:
+    name: nvidia-nim-serving-template
+  apiKey:
+    # initial value "true", triggers validation of the api-key
+    # will be set to "false" by the operator when validation process is done
+    # patch back to "true" to trigger another validation
+    # see status.conditions for validation status
+    validate: false
+    # this is mandatory and will be set by the Operator
+    secretRef:
+      name: odh-nim-app-api-key
+  content:
+    # initial value "true", triggers creation/update of the content configmap
+    # will be set to "false" by the operator when update process is done
+    # patch back to "true" to trigger an update
+    # see status.conditions for update status
+    update: false
+    # optionally set by the Operator after the initial configmap is created
+    configMapRef:
+      name: odh-nim-app-content
+status:
+  conditions:
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: ApiKeyValidatedSuccessfully
+      status: "True"
+      type: ApiKeyValidated
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: ContentUpdatedSuccessfully
+      status: "True"
+      type: ContentUpdated

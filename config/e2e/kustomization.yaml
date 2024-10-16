@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: odh-nim-test-deployment
+namePrefix: odh-nim-testing-
+resources:
+  - ../crd
+  - ../rbac
+  - ../manager
+images:
+  - name: odh-nim-operator-image
+    newName: odh-nim-operator-image
+    newTag: replace-me
+replicas:
+  - count: 1
+    name: manager
+labels:
+  - includeSelectors: true
+    includeTemplates: true
+    pairs:
+      app.kubernetes.io/part-of: opendatahub-nim-operator-testing
+patches:
+  - target:
+      kind: Deployment
+    patch: |
+      # we want debug logs for e2e
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --debug
+      # the image for testing is expected to be present on the cluster 
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: Never

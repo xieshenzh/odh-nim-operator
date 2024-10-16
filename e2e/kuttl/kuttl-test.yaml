@@ -1,0 +1,11 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestSuite
+artifactsDir: ./e2e/kuttl/output
+manifestDirs:
+  - ./e2e/kuttl/manifests
+crdDir: ./e2e/kuttl/crds
+testDirs:
+  - ./e2e/kuttl/tests
+startKIND: true
+kindContainers:
+  - replace-with-registry/replace-with-owner/odh-nim-operator:replace-with-tag

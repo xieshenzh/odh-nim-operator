@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/instance: odh-nim-operator-0.0.1
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: opendatahub-nim-operator
+    app.kubernetes.io/part-of: opendatahub-nim-operator
+    app.kubernetes.io/version: 0.0.1
+  name: odh-nim-operator-sm
+namespace: openshift-monitoring
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    path: /metrics
+    port: metrics
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+  namespaceSelector:
+    matchNames:
+    - opendatahub-operator-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: opendatahub-nim-operator

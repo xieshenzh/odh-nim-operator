@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: opendatahub-operator-system
+namePrefix: odh-nim-operator-
+resources:
+  - ../crd
+  - ../rbac
+  - ../manager
+  - ../webhook
+images:
+  - name: odh-nim-operator-image
+    newName: quay.io/ecosystem-appeng/odh-nim-operator
+    newTag: 0.0.1
+replicas:
+  - count: 1
+    name: manager
+components:
+  - ../components/prometheus
+  - ../components/metrics_proxy
+  - ../components/webhooks
+# instance and version labels are being patched by Makefile
+labels:
+  - includeSelectors: true
+    includeTemplates: true
+    pairs:
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/part-of: opendatahub-nim-operator
+  - includeTemplates: true
+    pairs:
+      app.kubernetes.io/instance: odh-nim-operator-0.0.1
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/name: opendatahub-nim-operator
+      app.kubernetes.io/version: 0.0.1

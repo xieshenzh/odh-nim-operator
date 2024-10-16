@@ -1,0 +1,4 @@
+resources:
+  - role.yaml # generated with controller-gen rbac
+  - serviceaccount.yaml
+  - rolebinding.yaml

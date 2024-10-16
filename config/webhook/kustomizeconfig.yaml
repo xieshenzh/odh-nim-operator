@@ -1,0 +1,9 @@
+nameReference:
+  - kind: Service
+    fieldSpecs:
+      - kind: ValidatingWebhookConfiguration
+        path: webhooks/clientConfig/service/name
+
+namespace:
+  - kind: ValidatingWebhookConfiguration
+    path: webhooks/clientConfig/service/namespace
