@@ -15,3 +15,10 @@ resources:
   webhooks:
     validation: true
     webhookVersion: v1
+- api:
+    crdVersion: v1alpha1
+    namespaced: true
+  domain: nim.opendatahub.io
+  kind: OdhNIMRuntime
+  path: github.com/opendatahub-io/odh-nim-operator/api/v1alpha1
+  version: v1alpha1

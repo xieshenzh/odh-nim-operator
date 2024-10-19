@@ -6,6 +6,132 @@ metadata:
       [
         {
           "apiVersion": "nim.opendatahub.io/v1alpha1",
+          "kind": "OdhNIMRuntime",
+          "metadata": {
+            "name": "odh-nim-runtime",
+            "namespace": "nim-project"
+          },
+          "spec": {
+            "inferenceServiceSpec": {
+              "predictor": {
+                "maxReplicas": 1,
+                "minReplicas": 1,
+                "model": {
+                  "modelFormat": {
+                    "name": "arctic-embed-l"
+                  },
+                  "name": "",
+                  "resources": {
+                    "limits": {
+                      "cpu": "8",
+                      "memory": "10Gi",
+                      "nvidia.com/gpu": "1"
+                    },
+                    "requests": {
+                      "cpu": "4",
+                      "memory": "8Gi",
+                      "nvidia.com/gpu": "1"
+                    }
+                  },
+                  "runtime": "my-custom-serving"
+                },
+                "tolerations": [
+                  {
+                    "effect": "NoSchedule",
+                    "key": "nvidia.com/gpu",
+                    "operator": "Exists"
+                  },
+                  {
+                    "effect": "NoSchedule",
+                    "key": "odh-notebook",
+                    "operator": "Exists"
+                  }
+                ]
+              },
+              "pvcSpec": {
+                "accessModes": [
+                  "ReadWriteOnce"
+                ],
+                "resources": {
+                  "requests": {
+                    "storage": "8Gi"
+                  }
+                },
+                "selector": {
+                  "matchExpressions": [
+                    {
+                      "key": "environment",
+                      "operator": "In",
+                      "values": [
+                        "dev"
+                      ]
+                    }
+                  ],
+                  "matchLabels": {
+                    "release": "stable"
+                  }
+                },
+                "storageClassName": "slow",
+                "volumeMode": "Filesystem"
+              }
+            },
+            "odhNIMAccountRef": {
+              "name": "odh-nim-app",
+              "namespace": "redhat-ods-applications"
+            }
+          },
+          "status": {
+            "conditions": [
+              {
+                "lastTransitionTime": "2024-09-26T00:00:00Z",
+                "reason": "PVCReconciledSuccessfully",
+                "status": "True",
+                "type": "PVCReconciled"
+              },
+              {
+                "lastTransitionTime": "2024-09-26T00:00:00Z",
+                "reason": "ImagePullSecretReconciledSuccessfully",
+                "status": "True",
+                "type": "ImagePullSecretReconciled"
+              },
+              {
+                "lastTransitionTime": "2024-09-26T00:00:00Z",
+                "reason": "NimSecretReconciledSuccessfully",
+                "status": "True",
+                "type": "NimSecretReconciled"
+              },
+              {
+                "lastTransitionTime": "2024-09-26T00:00:00Z",
+                "reason": "ServingRuntimeReconciledSuccessfully",
+                "status": "True",
+                "type": "ServingRuntimeReconciled"
+              },
+              {
+                "lastTransitionTime": "2024-09-26T00:00:00Z",
+                "reason": "InferenceServiceReconciledSuccessfully",
+                "status": "True",
+                "type": "InferenceReconciledCreation"
+              }
+            ],
+            "imagePullSecretRef": {
+              "name": "ngc-secret"
+            },
+            "inferenceServiceRef": {
+              "name": "my-custom-serving"
+            },
+            "nimSecretRef": {
+              "name": "nvidia-nim-secrets"
+            },
+            "pvcRef": {
+              "name": "nim-pvc"
+            },
+            "servingRuntimeRef": {
+              "name": "my-custom-serving"
+            }
+          }
+        },
+        {
+          "apiVersion": "nim.opendatahub.io/v1alpha1",
           "kind": "OdhNimApp",
           "metadata": {
             "name": "odh-nim-app",
@@ -47,7 +173,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2024-10-16T19:58:34Z"
+    createdAt: "2024-10-23T16:53:01Z"
     operators.operatorframework.io/builder: operator-sdk-v1.37.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
   name: odh-nim-operator.v0.0.1
@@ -101,6 +227,36 @@ spec:
         path: templateRef
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      statusDescriptors:
+      - displayName: Conditions
+        path: conditions
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.conditions
+      version: v1alpha1
+    - description: OdhNIMRuntime is used for creating NIM Kserve-based deployment
+        for Open Data Hub.
+      displayName: ODH NIM Runtime
+      kind: OdhNIMRuntime
+      name: odhnimruntimes.nim.opendatahub.io
+      resources:
+      - kind: InferenceService
+        name: ""
+        version: serving.kserve.io/v1beta1
+      - kind: ServingRuntime
+        name: ""
+        version: serving.kserve.io/v1alpha1
+      - kind: Secret
+        name: ngc-secret
+        version: v1
+      - kind: PersistentVolumeClaim
+        name: nim-pvc
+        version: v1
+      - kind: ConfigMap
+        name: nvidia-nim-data
+        version: v1
+      - kind: Secret
+        name: nvidia-nim-secrets
+        version: v1
       statusDescriptors:
       - displayName: Conditions
         path: conditions

@@ -61,6 +61,36 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:io.kubernetes.conditions
       version: v1alpha1
+    - description: OdhNIMRuntime is used for creating NIM Kserve-based deployment
+        for Open Data Hub.
+      displayName: ODH NIM Runtime
+      kind: OdhNIMRuntime
+      name: odhnimruntimes.nim.opendatahub.io
+      resources:
+      - kind: InferenceService
+        name: ""
+        version: serving.kserve.io/v1beta1
+      - kind: ServingRuntime
+        name: ""
+        version: serving.kserve.io/v1alpha1
+      - kind: Secret
+        name: ngc-secret
+        version: v1
+      - kind: PersistentVolumeClaim
+        name: nim-pvc
+        version: v1
+      - kind: ConfigMap
+        name: nvidia-nim-data
+        version: v1
+      - kind: Secret
+        name: nvidia-nim-secrets
+        version: v1
+      statusDescriptors:
+      - displayName: Conditions
+        path: conditions
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.conditions
+      version: v1alpha1
   description: ODH NIM Operator reconciles ODH NIM integration.
   displayName: ODH NIM Operator
   icon:
