@@ -4,14 +4,12 @@ package controllers
 
 import ctrl "sigs.k8s.io/controller-runtime"
 
-// +kubebuilder:rbac:groups="",resources=configmaps;secrets,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups="",resources=events,verbs=create
 // +kubebuilder:rbac:groups=coordination.k8s.io,resources=leases,verbs=get;create;update
-// +kubebuilder:rbac:groups=nim.opendatahub.io,resources=odhnimapps,verbs=get;list;watch;create;patch;delete
 
 const (
 	Finalizer_NimAppCleanup = "nim.opendatahub.io/cleanup_finalizer"
-	Label_NimApp            = "nim.opendatahub.io/nim-app"
+	Label_NimAccount        = "nim.opendatahub.io/nim-account"
 )
 
 // ControllerOptions is encapsulating the global options for use with all controllers

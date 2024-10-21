@@ -12,32 +12,32 @@ metadata:
     app.kubernetes.io/name: opendatahub-nim-operator
     app.kubernetes.io/part-of: opendatahub-nim-operator
     app.kubernetes.io/version: 0.0.1
-  name: odhnimapps.nim.opendatahub.io
+  name: odhnimaccounts.nim.opendatahub.io
 spec:
   group: nim.opendatahub.io
   names:
-    kind: OdhNimApp
-    listKind: OdhNimAppList
-    plural: odhnimapps
+    kind: OdhNIMAccount
+    listKind: OdhNIMAccountList
+    plural: odhnimaccounts
     shortNames:
-    - ona
-    singular: odhnimapp
+    - onima
+    singular: odhnimaccount
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - description: The validation status of the API Key
-      jsonPath: .status.conditions[?(@.type=="ApiKeyValidated")].status
-      name: Validated
+    - description: The name of the Template
+      jsonPath: .status.templateRef.name
+      name: Template
       type: string
-    - description: The status of the last content update
-      jsonPath: .status.conditions[?(@.type=="ContentUpdated")].status
-      name: Updated
+    - description: The name of the ConfigMap
+      jsonPath: .status.configMapRef.name
+      name: ConfigMap
       type: string
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OdhNimApp is used for activating NIM integration reconciliation
-          in Open Data Hub.
+        description: OdhNIMAccount is used for adopting a NIM Account for Open Data
+          Hub.
         properties:
           apiVersion:
             description: |-
@@ -57,114 +57,11 @@ spec:
           metadata:
             type: object
           spec:
+            description: OdhNIMAccountSpec defines the desired state of an OdhNIMAccount
+              object.
             properties:
-              apiKey:
-                properties:
-                  secretRef:
-                    description: ObjectReference contains enough information to let
-                      you inspect or modify the referred object.
-                    properties:
-                      apiVersion:
-                        description: API version of the referent.
-                        type: string
-                      fieldPath:
-                        description: |-
-                          If referring to a piece of an object instead of an entire object, this string
-                          should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                          For example, if the object reference is to a container within a pod, this would take on a value like:
-                          "spec.containers{name}" (where "name" refers to the name of the container that triggered
-                          the event) or if no container name is specified "spec.containers[2]" (container with
-                          index 2 in this pod). This syntax is chosen only to have some well-defined way of
-                          referencing a part of an object.
-                        type: string
-                      kind:
-                        description: |-
-                          Kind of the referent.
-                          More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-                        type: string
-                      name:
-                        description: |-
-                          Name of the referent.
-                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                        type: string
-                      namespace:
-                        description: |-
-                          Namespace of the referent.
-                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-                        type: string
-                      resourceVersion:
-                        description: |-
-                          Specific resourceVersion to which this reference is made, if any.
-                          More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-                        type: string
-                      uid:
-                        description: |-
-                          UID of the referent.
-                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-                        type: string
-                    type: object
-                    x-kubernetes-map-type: atomic
-                  validate:
-                    default: true
-                    type: boolean
-                required:
-                - validate
-                type: object
-              content:
-                properties:
-                  configMapRef:
-                    description: ObjectReference contains enough information to let
-                      you inspect or modify the referred object.
-                    properties:
-                      apiVersion:
-                        description: API version of the referent.
-                        type: string
-                      fieldPath:
-                        description: |-
-                          If referring to a piece of an object instead of an entire object, this string
-                          should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                          For example, if the object reference is to a container within a pod, this would take on a value like:
-                          "spec.containers{name}" (where "name" refers to the name of the container that triggered
-                          the event) or if no container name is specified "spec.containers[2]" (container with
-                          index 2 in this pod). This syntax is chosen only to have some well-defined way of
-                          referencing a part of an object.
-                        type: string
-                      kind:
-                        description: |-
-                          Kind of the referent.
-                          More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-                        type: string
-                      name:
-                        description: |-
-                          Name of the referent.
-                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                        type: string
-                      namespace:
-                        description: |-
-                          Namespace of the referent.
-                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-                        type: string
-                      resourceVersion:
-                        description: |-
-                          Specific resourceVersion to which this reference is made, if any.
-                          More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-                        type: string
-                      uid:
-                        description: |-
-                          UID of the referent.
-                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-                        type: string
-                    type: object
-                    x-kubernetes-map-type: atomic
-                  update:
-                    default: true
-                    type: boolean
-                required:
-                - update
-                type: object
-              templateRef:
-                description: ObjectReference contains enough information to let you
-                  inspect or modify the referred object.
+              secretRef:
+                description: A reference to the Secret containing the NGC API Key.
                 properties:
                   apiVersion:
                     description: API version of the referent.
@@ -207,11 +104,11 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
             required:
-            - apiKey
-            - content
-            - templateRef
+            - secretRef
             type: object
           status:
+            description: OdhNIMAccountStatus defines the observed state of an OdhNIMAccount
+              object.
             properties:
               conditions:
                 items:
@@ -269,9 +166,93 @@ spec:
                   - type
                   type: object
                 type: array
+              configMapRef:
+                description: A reference to the ConfigMap with data for NIM deployment.
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: |-
+                      If referring to a piece of an object instead of an entire object, this string
+                      should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within a pod, this would take on a value like:
+                      "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]" (container with
+                      index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                      referencing a part of an object.
+                    type: string
+                  kind:
+                    description: |-
+                      Kind of the referent.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                    type: string
+                  name:
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                    type: string
+                  resourceVersion:
+                    description: |-
+                      Specific resourceVersion to which this reference is made, if any.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                    type: string
+                  uid:
+                    description: |-
+                      UID of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              templateRef:
+                description: A reference to the Template for NIM ServingRuntime.
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: |-
+                      If referring to a piece of an object instead of an entire object, this string
+                      should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within a pod, this would take on a value like:
+                      "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]" (container with
+                      index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                      referencing a part of an object.
+                    type: string
+                  kind:
+                    description: |-
+                      Kind of the referent.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                    type: string
+                  name:
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                    type: string
+                  resourceVersion:
+                    description: |-
+                      Specific resourceVersion to which this reference is made, if any.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                    type: string
+                  uid:
+                    description: |-
+                      UID of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

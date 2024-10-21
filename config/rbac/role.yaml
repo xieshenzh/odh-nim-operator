@@ -8,13 +8,13 @@ rules:
   - ""
   resources:
   - configmaps
-  - secrets
   verbs:
   - create
   - delete
   - get
   - list
   - patch
+  - update
   - watch
 - apiGroups:
   - ""
@@ -22,6 +22,14 @@ rules:
   - events
   verbs:
   - create
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - coordination.k8s.io
   resources:
@@ -33,11 +41,38 @@ rules:
 - apiGroups:
   - nim.opendatahub.io
   resources:
-  - odhnimapps
+  - odhnimaccounts
   verbs:
   - create
   - delete
   - get
   - list
   - patch
+  - update
+  - watch
+- apiGroups:
+  - nim.opendatahub.io
+  resources:
+  - odhnimaccounts/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - nim.opendatahub.io
+  resources:
+  - odhnimaccounts/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - template.openshift.io
+  resources:
+  - templates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
   - watch

@@ -1,0 +1,8 @@
+apiVersion: nim.opendatahub.io/v1alpha1
+kind: OdhNIMAccount
+metadata:
+  name: odh-nim-account
+  namespace: redhat-ods-applications
+spec:
+  secretRef:
+    name: odh-nim-access

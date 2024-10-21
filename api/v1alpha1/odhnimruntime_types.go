@@ -56,5 +56,5 @@ type (
 )
 
 func init() {
-	schemeBuilder.Register(&OdhNIMRuntime{}, &OdhNIMRuntimeList{})
+	SchemeBuilder.Register(&OdhNIMRuntime{}, &OdhNIMRuntimeList{})
 }

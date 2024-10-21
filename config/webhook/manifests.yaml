@@ -10,9 +10,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-nim-opendatahub-io-v1alpha1-odhnimapp
+      path: /validate-nim-opendatahub-io-v1alpha1-odhnimaccount
   failurePolicy: Fail
-  name: validate.nim.opendatahub.io.v1alpha1.odhnimapp
+  name: validate.nim.opendatahub.io.v1alpha1.odhnimaccount
   rules:
   - apiGroups:
     - nim.opendatahub.io
@@ -23,5 +23,5 @@ webhooks:
     - UPDATE
     - DELETE
     resources:
-    - odhnimapps
+    - odhnimaccounts
   sideEffects: None

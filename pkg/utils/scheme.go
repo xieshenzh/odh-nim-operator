@@ -6,6 +6,7 @@ import (
 	kservev1alpha1 "github.com/kserve/kserve/pkg/apis/serving/v1alpha1"
 	kservev1beta1 "github.com/kserve/kserve/pkg/apis/serving/v1beta1"
 	"github.com/opendatahub-io/odh-nim-operator/api/v1alpha1"
+	octmpsv1 "github.com/openshift/api/template/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -17,6 +18,7 @@ func InstallTypes(scheme *runtime.Scheme) error {
 		corev1.AddToScheme,         // ConfigMaps, Secrets, and PVCs
 		kservev1beta1.AddToScheme,  // InferenceService
 		kservev1alpha1.AddToScheme, // ServingRuntime
+		octmpsv1.AddToScheme,       // Template
 	}
 
 	for _, install := range installs {

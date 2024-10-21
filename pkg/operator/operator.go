@@ -63,7 +63,7 @@ func (o *OdhNimOperator) Run(cmd *cobra.Command, args []string) error {
 		HealthProbeBindAddress: o.Options.ProbeAddr,
 		NewCache: cache.BuilderWithOptions(cache.Options{
 			SelectorsByObject: cache.SelectorsByObject{
-				&v1alpha1.OdhNimApp{}: {Label: labels.Everything()},
+				&v1alpha1.OdhNIMAccount{}: {Label: labels.Everything()},
 			},
 		}),
 	})

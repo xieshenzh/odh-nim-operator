@@ -61,6 +61,24 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:io.kubernetes.conditions
       version: v1alpha1
+    - description: OdhNIMAccount is used for adopting a NIM Account for Open Data
+        Hub.
+      displayName: ODH NIM Account
+      kind: OdhNIMAccount
+      name: odhnimaccounts.nim.opendatahub.io
+      resources:
+      - kind: ConfigMap
+        name: ""
+        version: v1
+      - kind: Template
+        name: ""
+        version: template.openshift.io/v1
+      statusDescriptors:
+      - displayName: Conditions
+        path: conditions
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.conditions
+      version: v1alpha1
     - description: OdhNIMRuntime is used for creating NIM Kserve-based deployment
         for Open Data Hub.
       displayName: ODH NIM Runtime

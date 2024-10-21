@@ -9,7 +9,7 @@ resources:
     crdVersion: v1alpha1
     namespaced: true
   domain: nim.opendatahub.io
-  kind: OdhNimApp
+  kind: OdhNIMAccount
   path: github.com/opendatahub-io/odh-nim-operator/api/v1alpha1
   version: v1alpha1
   webhooks:

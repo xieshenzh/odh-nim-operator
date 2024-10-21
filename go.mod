@@ -6,6 +6,7 @@ require (
 	github.com/kserve/kserve v0.14.0
 	github.com/onsi/ginkgo/v2 v2.20.1
 	github.com/onsi/gomega v1.34.1
+	github.com/openshift/api v0.0.0-20230823114715-5fdd7511b790
 	github.com/spf13/cobra v1.8.1
 	k8s.io/api v0.31.0
 	k8s.io/apimachinery v0.31.0

@@ -6,6 +6,19 @@ metadata:
       [
         {
           "apiVersion": "nim.opendatahub.io/v1alpha1",
+          "kind": "OdhNIMAccount",
+          "metadata": {
+            "name": "odh-nim-account",
+            "namespace": "redhat-ods-applications"
+          },
+          "spec": {
+            "secretRef": {
+              "name": "odh-nim-access"
+            }
+          }
+        },
+        {
+          "apiVersion": "nim.opendatahub.io/v1alpha1",
           "kind": "OdhNIMRuntime",
           "metadata": {
             "name": "odh-nim-runtime",
@@ -129,51 +142,10 @@ metadata:
               "name": "my-custom-serving"
             }
           }
-        },
-        {
-          "apiVersion": "nim.opendatahub.io/v1alpha1",
-          "kind": "OdhNimApp",
-          "metadata": {
-            "name": "odh-nim-app",
-            "namespace": "redhat-ods-applications"
-          },
-          "spec": {
-            "apiKey": {
-              "secretRef": {
-                "name": "odh-nim-app-api-key"
-              },
-              "validate": false
-            },
-            "content": {
-              "configMapRef": {
-                "name": "odh-nim-app-content"
-              },
-              "update": false
-            },
-            "templateRef": {
-              "name": "nvidia-nim-serving-template"
-            }
-          },
-          "status": {
-            "conditions": [
-              {
-                "lastTransitionTime": "2024-09-26T00:00:00Z",
-                "reason": "ApiKeyValidatedSuccessfully",
-                "status": "True",
-                "type": "ApiKeyValidated"
-              },
-              {
-                "lastTransitionTime": "2024-09-26T00:00:00Z",
-                "reason": "ContentUpdatedSuccessfully",
-                "status": "True",
-                "type": "ContentUpdated"
-              }
-            ]
-          }
         }
       ]
     capabilities: Basic Install
-    createdAt: "2024-10-23T16:53:01Z"
+    createdAt: "2024-10-23T18:59:14Z"
     operators.operatorframework.io/builder: operator-sdk-v1.37.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
   name: odh-nim-operator.v0.0.1
@@ -182,51 +154,18 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: OdhNimApp is used for activating NIM integration reconciliation
-        in Open Data Hub.
-      displayName: ODH NIM App
-      kind: OdhNimApp
-      name: odhnimapps.nim.opendatahub.io
+    - description: OdhNIMAccount is used for adopting a NIM Account for Open Data
+        Hub.
+      displayName: ODH NIM Account
+      kind: OdhNIMAccount
+      name: odhnimaccounts.nim.opendatahub.io
       resources:
-      - kind: OdhNimApp
+      - kind: ConfigMap
         name: ""
-        version: nim.opendatahub.io/v1alpha1
-      - kind: Secret
-        name: ngc-secret
-        version: v1
-      - kind: PersistentVolumeClaim
-        name: nim-pvc
-        version: v1
-      - kind: Secret
-        name: nvidia-nim-secrets
         version: v1
       - kind: Template
-        name: nvidia-nim-serving-template
+        name: ""
         version: template.openshift.io/v1
-      - kind: ConfigMap
-        name: odh-nim-app-content
-        version: v1
-      specDescriptors:
-      - displayName: Secret Ref
-        path: apiKey.secretRef
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:hidden
-      - displayName: Validate
-        path: apiKey.validate
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:booleanSwitch
-      - displayName: Config Map Ref
-        path: content.configMapRef
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:hidden
-      - displayName: Update
-        path: content.update
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:booleanSwitch
-      - displayName: Template Ref
-        path: templateRef
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:hidden
       statusDescriptors:
       - displayName: Conditions
         path: conditions
@@ -276,13 +215,13 @@ spec:
           - ""
           resources:
           - configmaps
-          - secrets
           verbs:
           - create
           - delete
           - get
           - list
           - patch
+          - update
           - watch
         - apiGroups:
           - ""
@@ -290,6 +229,14 @@ spec:
           - events
           verbs:
           - create
+        - apiGroups:
+          - ""
+          resources:
+          - secrets
+          verbs:
+          - get
+          - list
+          - watch
         - apiGroups:
           - coordination.k8s.io
           resources:
@@ -301,13 +248,40 @@ spec:
         - apiGroups:
           - nim.opendatahub.io
           resources:
-          - odhnimapps
+          - odhnimaccounts
           verbs:
           - create
           - delete
           - get
           - list
           - patch
+          - update
+          - watch
+        - apiGroups:
+          - nim.opendatahub.io
+          resources:
+          - odhnimaccounts/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - nim.opendatahub.io
+          resources:
+          - odhnimaccounts/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - template.openshift.io
+          resources:
+          - templates
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
           - watch
         serviceAccountName: odh-nim-operator-sa
       deployments:
@@ -445,7 +419,7 @@ spec:
     containerPort: 443
     deploymentName: odh-nim-operator-manager
     failurePolicy: Fail
-    generateName: validate.nim.opendatahub.io.v1alpha1.odhnimapp
+    generateName: validate.nim.opendatahub.io.v1alpha1.odhnimaccount
     rules:
     - apiGroups:
       - nim.opendatahub.io
@@ -456,8 +430,8 @@ spec:
       - UPDATE
       - DELETE
       resources:
-      - odhnimapps
+      - odhnimaccounts
     sideEffects: None
     targetPort: 9443
     type: ValidatingAdmissionWebhook
-    webhookPath: /validate-nim-opendatahub-io-v1alpha1-odhnimapp
+    webhookPath: /validate-nim-opendatahub-io-v1alpha1-odhnimaccount
