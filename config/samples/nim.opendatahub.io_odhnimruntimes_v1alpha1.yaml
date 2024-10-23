@@ -1,0 +1,82 @@
+apiVersion: nim.opendatahub.io/v1alpha1
+kind: OdhNIMRuntime
+metadata:
+  name: odh-nim-runtime
+  namespace: nim-project
+spec:
+  inferenceServiceSpec:
+    predictor:
+      maxReplicas: 1
+      minReplicas: 1
+      model:
+        modelFormat:
+          name: arctic-embed-l
+        name: ""
+        resources:
+          limits:
+            cpu: "8"
+            memory: 10Gi
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: "4"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+        runtime: my-custom-serving
+      tolerations:
+        - effect: NoSchedule
+          key: nvidia.com/gpu
+          operator: Exists
+        - effect: NoSchedule
+          key: odh-notebook
+          operator: Exists
+    pvcSpec:
+      accessModes:
+        - ReadWriteOnce
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 8Gi
+      storageClassName: slow
+      selector:
+        matchLabels:
+          release: "stable"
+        matchExpressions:
+          - key: environment
+            operator: In
+            values:
+              - dev
+  odhNIMAccountRef:
+    name: "odh-nim-app"
+    namespace: "redhat-ods-applications"
+status:
+  pvcRef:
+    name: "nim-pvc"
+  imagePullSecretRef:
+    name: "ngc-secret"
+  nimSecretRef:
+    name: "nvidia-nim-secrets"
+  servingRuntimeRef:
+    name: "my-custom-serving"
+  inferenceServiceRef:
+    name: "my-custom-serving"
+  conditions:
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: PVCReconciledSuccessfully
+      status: "True"
+      type: PVCReconciled
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: ImagePullSecretReconciledSuccessfully
+      status: "True"
+      type: ImagePullSecretReconciled
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: NimSecretReconciledSuccessfully
+      status: "True"
+      type: NimSecretReconciled
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: ServingRuntimeReconciledSuccessfully
+      status: "True"
+      type: ServingRuntimeReconciled
+    - lastTransitionTime: "2024-09-26T00:00:00Z"
+      reason: InferenceServiceReconciledSuccessfully
+      status: "True"
+      type: InferenceReconciledCreation

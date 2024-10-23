@@ -1,2 +1,3 @@
 resources:
   - nim.opendatahub.io_odhnimapps.yaml
+  - nim.opendatahub.io_odhnimruntimes.yaml
